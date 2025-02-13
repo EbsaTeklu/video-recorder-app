@@ -1,15 +1,15 @@
 import React, { useState, useRef, useEffect } from "react";
-import "./video-recorder.css"; // Import the CSS file for styling
+import "./video-recorder.css"; 
 
 const VideoRecorder = () => {
     const [recording, setRecording] = useState(false);
     const [recordedBlob, setRecordedBlob] = useState(null);
-    const [timeLeft, setTimeLeft] = useState(10);
+    const [recordingTime, setRecordingTime] = useState(5);
+    const [timeLeft, setTimeLeft] = useState(recordingTime);
     const [showPreview, setShowPreview] = useState(false);
     const [popupMessage, setPopupMessage] = useState("");
     const [showPopup, setShowPopup] = useState(false);
-    const [showThumbnail, setShowThumbnail] = useState(true); // New state for thumbnail visibility
-
+    const [showThumbnail, setShowThumbnail] = useState(true);
     const mediaRecorderRef = useRef(null);
     const recordedChunksRef = useRef([]);
     const streamRef = useRef(null);
@@ -30,17 +30,17 @@ const VideoRecorder = () => {
             streamRef.current = stream;
             previewRef.current.srcObject = stream;
             setRecording(true);
-            setShowPreview(false); // Hide preview during recording
-            setShowThumbnail(false); // Hide thumbnail when recording starts
+            setShowPreview(false); 
+            setShowThumbnail(false);
             recordedChunksRef.current = [];
-            setTimeLeft(10);
+            setTimeLeft(recordingTime); // Use recordingTime state here
 
             mediaRecorderRef.current = new MediaRecorder(stream);
             mediaRecorderRef.current.ondataavailable = event => recordedChunksRef.current.push(event.data);
             mediaRecorderRef.current.onstop = () => {
                 const blob = new Blob(recordedChunksRef.current, { type: "video/webm" });
                 setRecordedBlob(blob);
-                setShowPreview(true); // Show preview after recording stops
+                setShowPreview(true);
             };
 
             mediaRecorderRef.current.start();
@@ -51,7 +51,7 @@ const VideoRecorder = () => {
     };
 
     const startCountdown = () => {
-        let counter = 10;
+        let counter = recordingTime; // Use recordingTime to set the countdown duration
         const interval = setInterval(() => {
             counter--;
             setTimeLeft(counter > 0 ? counter : "Recording Completed");
@@ -94,7 +94,7 @@ const VideoRecorder = () => {
 
     return (
         <div className="video-recorder-container">
-            <h2>Record a 10-Second Video</h2>
+            <h2>Record a {recordingTime}-Second Video</h2>
             <div className="time-left">{timeLeft}</div>
 
             {/* Camera Container with Thumbnail */}
